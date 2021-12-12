@@ -1,0 +1,179 @@
+openapi: 3.0.1
+info:
+  title: API de Estados
+  description: API para adicionar, selecionar, atualizar e remover dados de Estados nacionais disponiveis num banco de dados local.
+  version: 0.0.1
+  license:
+    name: GPLv3
+    url: https://www.gnu.org/licenses/gpl-3.0.en.html
+  contact:
+    email: contato@example.com
+externalDocs:
+  description: Source code
+  url: https://github.com/JardelM/Avalia-o-Sprint3
+servers:
+  - url: http://localhost:8080
+    description: API local
+paths:
+  /api/states:
+  
+    get:
+      summary: Lista todos os Estados
+      parameters:
+          - name: regiao
+            in: query
+            description: Busca por estados da regiao informada
+            required: false
+            schema:
+              type: string
+            style: form
+            explode: true
+          - name: filtro
+            in: query
+            description: Ordena de forma decrescente por população ou por área.
+            required: false
+            schema:
+              type: string
+              enum:
+              - populacao desc
+              - area desc
+            style: form
+            explode: true
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estado"
+                
+
+    post:
+      summary: Cadastra um novo Estado
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Estado_post"
+      responses:
+        201:
+          description: Estado cadastrado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estado"
+                
+
+  /api/states/{id}:
+    parameters:
+      - name: id
+        in: path
+        schema:
+          type: integer
+        required: true
+        
+    get:
+      summary: Busca um Estado por ID
+      responses:
+        200:
+          description: Sucesso
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estado"
+        404:
+          description: ID não cadastrado
+          content:
+            application/json:
+              example: Not Found
+
+      
+    put:
+      summary: Atualiza um Estado pelo ID
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Estado"
+      responses:
+        200:
+          description: Estado atualizado
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estado"
+        404:
+          description: ID não encontrado
+          content:
+            application/json:
+              example: Not Found
+
+    delete:
+      summary: Remove um Estado por ID
+      responses:
+        200:
+          description: Estado removido
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Estado"
+        404:
+          description: ID não encontrado
+          content:
+            application/json:
+              example: Not Found
+              
+
+components:
+  schemas:
+    Estado:
+      type: object
+      properties:
+        id:
+          type: integer
+        nome:
+          type: string
+        regiao:
+          type: string
+          format: enum
+        populacao:
+          type: integer
+        capital:
+          type: string
+        area:
+          type: number
+          format: double
+      required:
+      - regiao
+      example:
+        id: 1
+        nome: Acre
+        regiao: Norte
+        populacao: 906876
+        capital: Rio Branco
+        area: 164173.431
+        
+        
+    Estado_post:
+      type: object
+      properties:
+        nome:
+          type: string
+        regiao:
+          type: string
+          format: enum
+        populacao:
+          type: integer
+        capital:
+          type: string
+        area:
+          type: number
+          format: double
+      required:
+      - regiao
+      example:
+        nome: Acre
+        regiao: Norte
+        populacao: 906876
+        capital: Rio Branco
+        area: 164173.431
